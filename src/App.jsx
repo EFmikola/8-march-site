@@ -97,6 +97,16 @@ function deterministicRandom(seed) {
   return value - Math.floor(value);
 }
 
+function getRandomFlyingHeartPosition(id = 1) {
+  return {
+    x: 10 + Math.random() * 75,
+    y: 10 + Math.random() * 70,
+    id,
+  };
+}
+
+const initialFlyingHeart = getRandomFlyingHeartPosition(1);
+
 function formatSurnameWithInitials(fullName) {
   const parts = fullName.trim().split(/\s+/);
   if (parts.length < 2) return fullName;
@@ -235,7 +245,7 @@ export default function March8GreetingPage() {
   const [pageParticles, setPageParticles] = useState([]);
   const [envelopeOpened, setEnvelopeOpened] = useState(false);
   const [caughtFlying, setCaughtFlying] = useState(0);
-  const [flyingHeart, setFlyingHeart] = useState({ x: 20, y: 30, id: 1 });
+  const [flyingHeart, setFlyingHeart] = useState(initialFlyingHeart);
   const [quizStep, setQuizStep] = useState(0);
   const [quizAnswers, setQuizAnswers] = useState([]);
 
@@ -262,12 +272,8 @@ export default function March8GreetingPage() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setFlyingHeart((prev) => ({
-        x: 10 + Math.random() * 75,
-        y: 10 + Math.random() * 70,
-        id: prev.id + 1,
-      }));
-    }, 1600);
+      setFlyingHeart((prev) => getRandomFlyingHeartPosition(prev.id + 1));
+    }, 2600);
     return () => clearInterval(timer);
   }, []);
 
@@ -332,7 +338,7 @@ export default function March8GreetingPage() {
   const catchFlyingHeart = () => {
     setCaughtFlying((prev) => Math.min(prev + 1, 3));
     spawnParticles(setPageParticles, ["💖", "✨", "🌸"]);
-    setFlyingHeart((prev) => ({ ...prev, x: 10 + Math.random() * 75, y: 10 + Math.random() * 70, id: prev.id + 1 }));
+    setFlyingHeart((prev) => getRandomFlyingHeartPosition(prev.id + 1));
   };
 
   const answerQuiz = (answer) => {
@@ -462,8 +468,8 @@ export default function March8GreetingPage() {
         <RevealSection>
           <div className="mb-6 flex items-center justify-between gap-4">
             <div>
-              <div className="inline-flex rounded-full bg-[#dff2ff] px-4 py-2 text-sm text-[#5f9ccc]">интерактив</div>
-              <h2 className="mt-3 text-3xl font-bold text-[#cf3d74]">Поиграйте немного перед подарком</h2>
+              <div className="inline-flex rounded-full bg-[#dff2ff] px-4 py-2 text-sm text-[#5f9ccc]">праздничные сюрпризы</div>
+              <h2 className="mt-3 text-3xl font-bold text-[#cf3d74]">Немного весенней магии перед подарком</h2>
             </div>
             <div className="rounded-full bg-white px-4 py-2 text-sm shadow-sm text-[#9f7f90]">
               Выполнено: {Number(heartsFound.length >= 3) + Number(petted >= 5) + Number(Boolean(wish)) + Number(selectedMood !== null) + Number(secretFlipped) + Number(envelopeOpened) + Number(caughtFlying >= 3) + Number(quizAnswers.length === 3)}/8
@@ -579,17 +585,17 @@ export default function March8GreetingPage() {
                     <div className="flex h-full flex-col items-center justify-center rounded-[24px] border-2 border-dashed border-white/80 bg-white/30 text-center">
                       <div className="text-6xl">🎀</div>
                       <div className="mt-4 text-2xl font-black uppercase text-[#cf3d74]">Тайная карта</div>
-                      <p className="mt-3 max-w-[180px] text-sm text-[#a06d86]">Нажми и открой случайное тайное предсказание</p>
+                      <p className="mt-3 max-w-[180px] text-sm text-[#a06d86]">Открой карту и получи тёплое предсказание</p>
                     </div>
                   </div>
                   <div className="absolute inset-0 rounded-[30px] border-4 border-white bg-white p-6 shadow-lg [backface-visibility:hidden] [transform:rotateY(180deg)]">
                     <div className="flex h-full flex-col justify-between rounded-[24px] bg-[#fff7fb] p-5 text-left">
                       <div>
-                        <div className="inline-flex rounded-full bg-[#ffe2ef] px-3 py-1 text-sm font-semibold text-[#cf3d74]">секрет раскрыт</div>
+                        <div className="inline-flex rounded-full bg-[#ffe2ef] px-3 py-1 text-sm font-semibold text-[#cf3d74]">для тебя</div>
                         <div className="mt-5 text-2xl font-bold text-[#cf3d74]">{secretCard?.title || "Ожидание..."}</div>
-                        <p className="mt-4 leading-7 text-[#8f677a]">{secretCard?.text || "Сейчас появится случайная карта"}</p>
+                        <p className="mt-4 leading-7 text-[#8f677a]">{secretCard?.text || "Выбери карту, чтобы открыть предсказание"}</p>
                       </div>
-                      <div className="text-sm text-[#c084a3]">нажми ещё раз — и выпадет новая карта ✨</div>
+                      <div className="text-sm text-[#c084a3]">Можно открыть ещё одну карту ✨</div>
                     </div>
                   </div>
                 </Motion.button>
@@ -597,12 +603,12 @@ export default function March8GreetingPage() {
               </div>
 
               <div className="rounded-[28px] bg-white p-6 shadow-sm">
-                <h3 className="text-2xl font-bold text-[#cf3d74]">Маленькая магия</h3>
+                <h3 className="text-2xl font-bold text-[#cf3d74]">Тёплое предсказание</h3>
                 <p className="mt-4 leading-7 text-[#8f677a]">
-                  Сначала карта полностью скрыта. После нажатия она переворачивается, показывает случайный результат и выпускает вокруг себя частички — сердечки, звёздочки и цветочки.
+                  Выбери карту и пусть она подарит тебе маленький приятный знак на эту весну.
                 </p>
                 <div className="mt-5 inline-flex rounded-full bg-[#fff0f6] px-4 py-2 text-sm text-[#cf3d74]">
-                  {secretFlipped ? "Карта открыта" : "Карта ещё не открыта"}
+                  {secretFlipped ? "Предсказание открыто" : "Выбери карту"}
                 </div>
               </div>
             </div>
@@ -620,7 +626,7 @@ export default function March8GreetingPage() {
                   onClick={catchFlyingHeart}
                   className="absolute text-3xl"
                   animate={{ left: `${flyingHeart.x}%`, top: `${flyingHeart.y}%`, scale: [1, 1.18, 1] }}
-                  transition={{ duration: 1.2, ease: "easeInOut" }}
+                  transition={{ duration: 2.2, ease: "easeInOut" }}
                 >
                   💖
                 </Motion.button>
@@ -703,7 +709,7 @@ export default function March8GreetingPage() {
                 >
                   <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-sm font-semibold text-[#cf3d74]">{formatSurnameWithInitials(msg.name)}</div>
                   <p className="leading-7 text-[#8f677a]">{msg.text}</p>
-                  <div className="mt-4 text-sm text-[#cf86a7]">с подписью ✿</div>
+                  <div className="mt-4 text-sm text-[#cf86a7]">с теплом и уважением</div>
                 </Motion.div>
               ))}
             </div>
@@ -719,7 +725,7 @@ export default function March8GreetingPage() {
               <div className="mb-4 inline-flex rounded-full bg-white px-4 py-2 text-sm text-[#cf3d74] shadow-sm">финал</div>
               <h2 className="text-4xl font-black uppercase text-[#cf3d74]">Подарок ждёт внизу</h2>
               <p className="mt-4 text-lg leading-8 text-[#8f677a]">
-                Чтобы открыть сертификат, нужно долистать до конца и пройти все маленькие интерактивы выше.
+                Чтобы открыть сертификат, нужно долистать до конца и пройти все маленькие сюрпризы выше.
               </p>
 
               <div className="mt-8 rounded-[28px] bg-white/90 p-6 text-left shadow-sm">
@@ -751,7 +757,7 @@ export default function March8GreetingPage() {
                   className={`inline-flex items-center gap-3 rounded-full px-8 py-4 text-lg font-semibold shadow-md transition ${unlocked ? "bg-[#cf3d74] text-white hover:-translate-y-0.5" : "cursor-not-allowed bg-white text-[#c5a7b5]"}`}
                 >
                   <Gift className="h-5 w-5" />
-                  {unlocked ? "Открыть сертификат" : "Подарок откроется после интерактивов"}
+                  {unlocked ? "Открыть сертификат" : "Подарок откроется после всех заданий"}
                 </Motion.a>
               </div>
             </div>
