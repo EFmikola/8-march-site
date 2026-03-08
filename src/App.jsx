@@ -170,7 +170,7 @@ function BackgroundParticles() {
     top: `${(i * 13) % 95}%`,
     duration: 8 + (i % 5),
     delay: (i % 7) * 0.4,
-    symbol: ["💖", "✨", "🌸", "вЃпёЏ", "🐾"][i % 5],
+    symbol: ["💖", "✨", "🌸", "☃️", "🐾"][i % 5],
     size: 14 + (i % 4) * 6,
   }));
 
