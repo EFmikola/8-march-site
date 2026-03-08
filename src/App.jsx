@@ -133,10 +133,22 @@ function FloatingSticker({ children, className = "" }) {
 }
 
 function RevealSection({ children, delay = 0 }) {
+  const [forceVisible, setForceVisible] = useState(() => typeof window === "undefined" || !("IntersectionObserver" in window));
+
+  useEffect(() => {
+    if (forceVisible) return;
+
+    // Fallback for mobile webviews where whileInView may never fire.
+    const timer = setTimeout(() => setForceVisible(true), 1200);
+    return () => clearTimeout(timer);
+  }, [forceVisible]);
+
   return (
     <Motion.div
       initial={{ opacity: 0, y: 28, scale: 0.985 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      animate={forceVisible ? { opacity: 1, y: 0, scale: 1 } : undefined}
+      onViewportEnter={() => setForceVisible(true)}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.55, delay }}
     >
@@ -701,8 +713,7 @@ export default function March8GreetingPage() {
                 <Motion.div
                   key={msg.name}
                   initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
                   whileHover={{ y: -6, rotate: idx % 2 === 0 ? -1 : 1 }}
                   className="rounded-[26px] bg-[#fff4f8] p-5 shadow-sm"
